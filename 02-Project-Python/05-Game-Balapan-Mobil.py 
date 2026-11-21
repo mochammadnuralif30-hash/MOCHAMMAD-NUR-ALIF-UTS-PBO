@@ -1,0 +1,601 @@
+# ==========================================================
+# GAME BALAPAN MOBIL
+# UTS PEMROGRAMAN BERORIENTASI OBJEK (PBO)
+# Nama       : Mochamad Nur Alif
+# Universitas: Universitas Bina Bangsa
+# Bahasa     : Python
+# Library    : Pygame
+# ==========================================================
+
+import pygame
+import random
+import sys
+
+pygame.init()
+
+# ================= PENGATURAN LAYAR =================
+
+WIDTH = 500
+HEIGHT = 700
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("CAR RACING GAME")
+
+clock = pygame.time.Clock()
+
+# ================= WARNA =================
+
+WHITE = (255, 255, 255)
+BLACK = (20, 20, 20)
+GRAY = (65, 65, 65)
+GREEN = (25, 120, 55)
+RED = (220, 40, 40)
+BLUE = (40, 100, 230)
+YELLOW = (255, 210, 0)
+ORANGE = (255, 140, 0)
+
+# ================= FONT =================
+
+font_small = pygame.font.Font(None, 28)
+font_medium = pygame.font.Font(None, 40)
+font_large = pygame.font.Font(None, 65)
+
+# ================= PENGATURAN JALAN =================
+
+ROAD_LEFT = 70
+ROAD_RIGHT = 430
+ROAD_WIDTH = ROAD_RIGHT - ROAD_LEFT
+
+LANE_WIDTH = ROAD_WIDTH // 3
+
+LANE_CENTERS = [
+    ROAD_LEFT + LANE_WIDTH // 2,
+    ROAD_LEFT + LANE_WIDTH + LANE_WIDTH // 2,
+    ROAD_LEFT + 2 * LANE_WIDTH + LANE_WIDTH // 2
+]
+
+# ================= LEVEL PERMAINAN =================
+
+LEVELS = {
+    "EASY": {"speed": 4, "enemy_speed": 3},
+    "MEDIUM": {"speed": 6, "enemy_speed": 5},
+    "HARD": {"speed": 8, "enemy_speed": 7}
+}
+
+
+# ==========================================================
+# CLASS MOBIL
+# ==========================================================
+
+class Car:
+
+    def __init__(self, x, y, color):
+        self.rect = pygame.Rect(x - 22, y, 44, 75)
+        self.color = color
+
+    def draw(self):
+
+        pygame.draw.rect(
+            screen,
+            self.color,
+            self.rect,
+            border_radius=8
+        )
+
+        # Kaca depan
+        pygame.draw.rect(
+            screen,
+            (170, 220, 255),
+            (self.rect.x + 8, self.rect.y + 10, 28, 18),
+            border_radius=4
+        )
+
+        # Kaca belakang
+        pygame.draw.rect(
+            screen,
+            (170, 220, 255),
+            (self.rect.x + 8, self.rect.y + 48, 28, 15),
+            border_radius=4
+        )
+
+        # Lampu depan
+        pygame.draw.rect(
+            screen,
+            WHITE,
+            (self.rect.x + 5, self.rect.y + 3, 8, 5)
+        )
+
+        pygame.draw.rect(
+            screen,
+            WHITE,
+            (self.rect.x + 31, self.rect.y + 3, 8, 5)
+        )
+
+    def move_lane(self, direction):
+
+        current_lane = min(
+            range(3),
+            key=lambda i: abs(
+                self.rect.centerx - LANE_CENTERS[i]
+            )
+        )
+
+        new_lane = max(
+            0,
+            min(2, current_lane + direction)
+        )
+
+        self.rect.centerx = LANE_CENTERS[new_lane]
+
+
+# ==========================================================
+# CLASS KOIN
+# ==========================================================
+
+class Coin:
+
+    def __init__(self, lane, y=-30):
+
+        self.rect = pygame.Rect(
+            LANE_CENTERS[lane] - 12,
+            y,
+            24,
+            24
+        )
+
+    def draw(self):
+
+        pygame.draw.circle(
+            screen,
+            YELLOW,
+            self.rect.center,
+            12
+        )
+
+        pygame.draw.circle(
+            screen,
+            ORANGE,
+            self.rect.center,
+            8,
+            2
+        )
+
+    def move(self, speed):
+
+        self.rect.y += speed
+
+
+# ==========================================================
+# FUNGSI TEKS DAN TOMBOL
+# ==========================================================
+
+def draw_text(text, font, color, x, y):
+
+    image = font.render(text, True, color)
+
+    rect = image.get_rect(
+        center=(x, y)
+    )
+
+    screen.blit(image, rect)
+
+
+def draw_button(text, x, y, width, height, color):
+
+    rect = pygame.Rect(
+        x, y, width, height
+    )
+
+    pygame.draw.rect(
+        screen,
+        color,
+        rect,
+        border_radius=10
+    )
+
+    draw_text(
+        text,
+        font_medium,
+        WHITE,
+        rect.centerx,
+        rect.centery
+    )
+
+    return rect
+
+
+# ==========================================================
+# FUNGSI JALAN
+# ==========================================================
+
+def draw_road(road_offset):
+
+    screen.fill(GREEN)
+
+    pygame.draw.rect(
+        screen,
+        GRAY,
+        (ROAD_LEFT, 0, ROAD_WIDTH, HEIGHT)
+    )
+
+    # Garis tepi jalan
+    pygame.draw.line(
+        screen,
+        WHITE,
+        (ROAD_LEFT, 0),
+        (ROAD_LEFT, HEIGHT),
+        5
+    )
+
+    pygame.draw.line(
+        screen,
+        WHITE,
+        (ROAD_RIGHT, 0),
+        (ROAD_RIGHT, HEIGHT),
+        5
+    )
+
+    # Garis pembatas tiga jalur
+    for x in [
+        ROAD_LEFT + LANE_WIDTH,
+        ROAD_LEFT + 2 * LANE_WIDTH
+    ]:
+
+        for y in range(-60, HEIGHT, 100):
+
+            pygame.draw.rect(
+                screen,
+                WHITE,
+                (x - 3, y + road_offset, 6, 50)
+            )
+
+
+# ==========================================================
+# MENU UTAMA
+# ==========================================================
+
+def main_menu():
+
+    selected_level = "EASY"
+
+    while True:
+
+        screen.fill((20, 35, 45))
+
+        draw_text(
+            "CAR RACING GAME",
+            font_large,
+            YELLOW,
+            WIDTH // 2,
+            150
+        )
+
+        draw_text(
+            "Choose Difficulty",
+            font_medium,
+            WHITE,
+            WIDTH // 2,
+            250
+        )
+
+        draw_text(
+            "Selected: " + selected_level,
+            font_small,
+            WHITE,
+            WIDTH // 2,
+            280
+        )
+
+        easy_button = draw_button(
+            "EASY",
+            160, 330,
+            180, 50,
+            (30, 150, 70)
+        )
+
+        medium_button = draw_button(
+            "MEDIUM",
+            160, 400,
+            180, 50,
+            (40, 100, 200)
+        )
+
+        hard_button = draw_button(
+            "HARD",
+            160, 470,
+            180, 50,
+            (190, 50, 50)
+        )
+
+        start_button = draw_button(
+            "START GAME",
+            120, 560,
+            260, 60,
+            (220, 140, 0)
+        )
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+                if easy_button.collidepoint(event.pos):
+                    selected_level = "EASY"
+
+                elif medium_button.collidepoint(event.pos):
+                    selected_level = "MEDIUM"
+
+                elif hard_button.collidepoint(event.pos):
+                    selected_level = "HARD"
+
+                elif start_button.collidepoint(event.pos):
+                    return selected_level
+
+        clock.tick(60)
+
+
+# ==========================================================
+# GAME OVER
+# ==========================================================
+
+def game_over_screen(score):
+
+    while True:
+
+        screen.fill((25, 25, 35))
+
+        draw_text(
+            "GAME OVER",
+            font_large,
+            RED,
+            WIDTH // 2,
+            200
+        )
+
+        draw_text(
+            "Your Score: " + str(score),
+            font_medium,
+            WHITE,
+            WIDTH // 2,
+            290
+        )
+
+        restart_button = draw_button(
+            "RESTART",
+            100, 390,
+            300, 60,
+            (30, 150, 70)
+        )
+
+        menu_button = draw_button(
+            "BACK TO MENU",
+            100, 480,
+            300, 60,
+            (40, 100, 200)
+        )
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+
+                if restart_button.collidepoint(event.pos):
+                    return "RESTART"
+
+                elif menu_button.collidepoint(event.pos):
+                    return "MENU"
+
+        clock.tick(60)
+
+
+# ==========================================================
+# GAME UTAMA
+# ==========================================================
+
+def play_game(level):
+
+    player = Car(
+        LANE_CENTERS[1],
+        570,
+        BLUE
+    )
+
+    enemies = []
+    coins = []
+
+    score = 0
+    road_offset = 0
+
+    speed = LEVELS[level]["speed"]
+    enemy_speed = LEVELS[level]["enemy_speed"]
+
+    enemy_timer = 0
+    coin_timer = 0
+
+    running = True
+
+    while running:
+
+        clock.tick(60)
+
+        # INPUT PEMAIN
+        for event in pygame.event.get():
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+            if event.type == pygame.KEYDOWN:
+
+                if event.key == pygame.K_LEFT:
+                    player.move_lane(-1)
+
+                elif event.key == pygame.K_RIGHT:
+                    player.move_lane(1)
+
+        # GERAKAN JALAN
+        road_offset = (
+            road_offset + speed
+        ) % 100
+
+        # MEMBUAT MOBIL MUSUH
+        enemy_timer += 1
+
+        if enemy_timer >= max(
+            25,
+            80 - enemy_speed * 5
+        ):
+
+            lane = random.randint(0, 2)
+
+            safe = all(
+                enemy.rect.top > 120
+                or enemy.rect.centerx != LANE_CENTERS[lane]
+                for enemy in enemies
+            )
+
+            if safe:
+
+                enemies.append(
+                    Car(
+                        LANE_CENTERS[lane],
+                        -90,
+                        RED
+                    )
+                )
+
+                enemy_timer = 0
+
+        # MEMBUAT KOIN
+        coin_timer += 1
+
+        if coin_timer >= 110:
+
+            lane = random.randint(0, 2)
+
+            safe = all(
+                enemy.rect.top > 130
+                or enemy.rect.centerx != LANE_CENTERS[lane]
+                for enemy in enemies
+            )
+
+            if safe:
+
+                coins.append(
+                    Coin(lane)
+                )
+
+                coin_timer = 0
+
+        # GERAKKAN MOBIL MUSUH
+        for enemy in enemies:
+            enemy.rect.y += enemy_speed
+
+        # GERAKKAN KOIN
+        for coin in coins:
+            coin.move(speed)
+
+        # HAPUS OBJEK DI LUAR LAYAR
+        enemies = [
+            enemy for enemy in enemies
+            if enemy.rect.top < HEIGHT
+        ]
+
+        coins = [
+            coin for coin in coins
+            if coin.rect.top < HEIGHT
+        ]
+
+        # DETEKSI TABRAKAN
+        for enemy in enemies:
+
+            if player.rect.colliderect(enemy.rect):
+                running = False
+
+        # MENGAMBIL KOIN
+        for coin in coins[:]:
+
+            if player.rect.colliderect(coin.rect):
+
+                score += 10
+                coins.remove(coin)
+
+        # GAMBAR JALAN
+        draw_road(road_offset)
+
+        # GAMBAR KOIN
+        for coin in coins:
+            coin.draw()
+
+        # GAMBAR MUSUH
+        for enemy in enemies:
+            enemy.draw()
+
+        # GAMBAR PEMAIN
+        player.draw()
+
+        # INFORMASI GAME
+        pygame.draw.rect(
+            screen,
+            BLACK,
+            (0, 0, WIDTH, 45)
+        )
+
+        draw_text(
+            "SCORE: " + str(score),
+            font_small,
+            WHITE,
+            90,
+            22
+        )
+
+        draw_text(
+            "LEVEL: " + level,
+            font_small,
+            YELLOW,
+            390,
+            22
+        )
+
+        pygame.display.update()
+
+    return score
+
+
+# ==========================================================
+# PROGRAM UTAMA
+# ==========================================================
+
+def main():
+
+    while True:
+
+        level = main_menu()
+
+        score = play_game(level)
+
+        result = game_over_screen(score)
+
+        if result == "RESTART":
+            continue
+
+        elif result == "MENU":
+            continue
+
+
+# ==========================================================
+# MENJALANKAN GAME
+# ==========================================================
+
+if __name__ == "__main__":
+    main()
