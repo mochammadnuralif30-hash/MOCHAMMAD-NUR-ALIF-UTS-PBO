@@ -59,4 +59,4 @@ python 05-Game-Balapan-Mobil.py
 
 9. Kesimpulan
 
-Game Balapan Mobil dibuat untuk menerapkan dasar Python dan konsep Object-Oriented Programming dalam sebuah permainan sederhana.
+Game Balapan Mobil dibuat untuk menerapkan dasar Python dan konsep Object-Oriented Programming dalam sebuah permainan sederhana. 
