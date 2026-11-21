@@ -12,7 +12,7 @@ Materi: Variabel, input, output, dan operasi aritmatika.
 
 2. Program Algoritma dan Percabangan
 
-File: "02-Program-Algoritma-dan-Percabangan.py"
+File: "02-Program-Algoritma-dan-Percabangan.py" 
 
 Materi: Algoritma, perhitungan nilai, dan percabangan if-elif-else.
 
