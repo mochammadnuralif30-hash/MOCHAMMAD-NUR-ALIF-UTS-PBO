@@ -1,63 +1,64 @@
-PORTOFOLIO PEMROGRAMAN BERORIENTASI OBJEK (PBO)
-
-Repository ini berisi tugas UTS saya untuk mata kuliah Pemrograman Berorientasi Objek (PBO), yaitu resume materi pembelajaran Python, algoritma, dasar-dasar OOP, dan program praktik.
+UTS PEMROGRAMAN BERORIENTASI OBJEK
 
 Identitas Mahasiswa
 
-- Nama: Mochammad Nur Alif
-- NIM: 14022500126
-- Program Studi: Sistem Informasi
-- Universitas: Universitas Bina Bangsa
-- Dosen Pengampu: Dieng Asep Jamaludin,S.PD,M.TI
+Keterangan| Informasi
+Nama| Mochamad Nur Alif
+NIM| 14022500126
+Program Studi| Sistem Informasi
+Universitas| Universitas Bina Bangsa
+Mata Kuliah| Pemrograman Berorientasi Objek (PBO)
+Dosen Pengampu| Dieng Asep Jamaludin,S.PD,M.TI.
 
----
-
-Isi Repository
-
-- "01-Resume-Materi" : berisi rangkuman materi pembelajaran Python, algoritma, dan PBO.
-- "02-Project-Python" : berisi kumpulan program latihan dan proyek Game Balapan Mobil.
-
-1. Resume Materi
-
-Resume ini membahas materi pembelajaran yang meliputi:
-
-- Pengenalan Python
-- Dasar-dasar Algoritma
-- Variabel dan Tipe Data
-- Operator
-- Percabangan
-- Perulangan
-- Fungsi
-- Class dan Object
-- Attributes dan Methods
-- Parameter self
-- Inheritance
-- Encapsulation
-
-2. Praktik Pemrograman
-
-Game Balapan Mobil
-
-Program permainan balapan mobil 2D yang dibuat menggunakan bahasa pemrograman Python dengan library Pygame.
-
-Fitur permainan:
-
-- Tiga jalur balapan.
-- Mobil pemain dan mobil musuh.
-- Mengumpulkan koin.
-- Sistem skor.
-- Pilihan tingkat kesulitan Easy, Medium, dan Hard.
-- Game Over dan Restart.
-
-Konsep PBO yang diterapkan meliputi Class, Object, Attributes, Methods, Constructor, dan Inheritance.
-
-File program: "Game-Balapan-Mobil/main.py"
-
-Bahasa Pemrograman
-
-- Python
-- Pygame
-
----
+Deskripsi Repository
 
 Repository ini dibuat untuk memenuhi tugas Ujian Tengah Semester (UTS) mata kuliah Pemrograman Berorientasi Objek (PBO).
+
+Repository berisi resume materi perkuliahan, latihan pemrograman Python, penerapan konsep OOP, serta project Game Balapan Mobil menggunakan Python dan Pygame.
+
+Struktur Repository
+
+MOCHAMMAD-NUR-ALIF-UTS-PBO/
+│
+├── 01-Resume-Materi/
+│   ├── README.md
+│   └── 01-25 Materi Resume
+│
+├── 02-Project-Python/
+│   ├── README.md
+│   ├── 01-Program-Python-Dasar.py
+│   ├── 02-Program-Algoritma-dan-Percabangan.py
+│   ├── 03-Program-Perulangan-dan-Fungsi.py
+│   ├── 04-Program-OOP-Mahasiswa.py
+│   ├── 05-Game-Balapan-Mobil.py
+│   ├── requirements.txt
+│   ├── DAFTAR-PROJECT.md
+│   └── README-Game-Balapan-Mobil.md
+│
+├── INDEX.md
+├── CONTRIBUTING.md
+└── LICENSE
+
+Daftar Project
+
+1. Program Python Dasar.
+2. Program Algoritma dan Percabangan.
+3. Program Perulangan dan Fungsi.
+4. Program OOP Mahasiswa.
+5. Game Balapan Mobil.
+
+Teknologi
+
+- Python
+- Object-Oriented Programming (OOP)
+- Pygame
+- GitHub
+
+Tujuan
+
+Meningkatkan pemahaman mengenai dasar pemrograman Python, algoritma, dan konsep Pemrograman Berorientasi Objek melalui materi dan praktik langsung.
+
+---
+
+Universitas Bina Bangsa
+Program Studi Sistem Informasi
