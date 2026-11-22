@@ -1,12 +1,3 @@
-# ==========================================================
-# GAME BALAPAN MOBIL
-# UTS PEMROGRAMAN BERORIENTASI OBJEK (PBO)
-# Nama       : Mochamad Nur Alif
-# Universitas: Universitas Bina Bangsa
-# Bahasa     : Python
-# Library    : Pygame
-# ==========================================================
-
 import pygame
 import random
 import sys
